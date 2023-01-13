@@ -8,9 +8,10 @@ if(isset($_GET["CustomerID"]))
 
     $strCustomerID = $_GET["CustomerID"];
     echo "<br>"."strCustomerID =".$strCustomerID;
-    $sql="SELECT * FROM customer WHERE CustomerID = '".$strCustomerID ."'";
+    $sql="SELECT * FROM customer WHERE CustomerID = :customerID";
     echo "<br>" . "sql=".$sql."<br>";
     $stml = $conn->prepare($sql);
+    $stml->birdParam(':customerID', $_GET['customerID']);
     $stml->execute();
     $result=$stml->fetch(PDO::FETCH_NUM);
     //print_r($resute);
