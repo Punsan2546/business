@@ -12,7 +12,7 @@ if(isset($_GET["CustomerID"]))
     echo "<br>" . "sql=".$sql."<br>";
     $stml = $conn->prepare($sql);
     $stml->execute();
-    $result=$stml->fetch(PDO::FETCH_NUM);
+    $result=$stml->fetchAll();
     print_r($result);
 }
 ?>
