@@ -1,59 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+<h1>Test SQL injecttion</h1>
+    <form action="select_injection_Customerbindparam.php" method="GET">
+
+        <input type="text" placeholder="Enter Country Name" name="customerID">
+
+        <br> <br>
+
+        <input type="submit">
+    </form>
+</body>
+</html>
+
 <?php
-require "connect.php";
 
+if (isset($_GET["customerID"])):
+    echo "<br>" . $_GET['customerID'];
+    require 'connect.php';
+    $count = 0;
+    $sql = "SELECT * FROM customer where CustomerID =:customerID";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':customerID', $_GET['customerID']);
+    $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
-if(isset($_GET["CustomerID"]))
+    echo "<br>******************<br>";
 
-{
+    while ($row = $stmt->fetch()) {
+        echo $row['CustomerID']. '&nbsp' . $row['Name'] ."<br>";
+        $count++;
+    }
 
-    $strCustomerID = $_GET["CustomerID"];
-    echo "<br>"."strCustomerID =".$strCustomerID;
-    $sql="SELECT * FROM customer WHERE CustomerID = :customerID";
-    echo "<br>" . "sql=".$sql."<br>";
-    $stml = $conn->prepare($sql);
-    $stml->birdParam(':customerID', $_GET['customerID']);
-    $stml->execute();
-    $result=$stml->fetch(PDO::FETCH_NUM);
-    //print_r($resute);
-}
-?>
-<table width="300" border="1">
-  <tr>
-    <th width="325">รหัสลูกค้าสมาชิก</th>
-    <td width="240"><?php echo $result["0"]; ?></td>
-  </tr>
-
-  <tr>
-    <th width="130">ชื่อ</th>
-    <td><?php echo $result["1"]; ?></td>
-  </tr>
- 
-
-  <tr>
-    <th width="130">Email</th>
-    <td><?php echo $result["2"]; ?></td>
-  </tr>
-
-
-  <tr>
-    <th width="130">Birthdate</th>
-    <td><?php echo $result["3"]; ?></td>
-  </tr>
-
-
-  <tr>
-    <th width="130">CountryCode</th>
-    <td><?php echo $result["4"]; ?></td>
-  </tr>
-
-
-  <tr>
-    <th width="130">OutstandingDebt</th>
-    <td><?php echo $result["5"]; ?></td>
-  </tr>
-
- 
-  </table>
-<?php
-$conn = null;
+    //echo "count ... ".$count;
+    if($count==0)
+    echo "<br> No data ... <br>";
+    $conn = null;
+endif;
 ?>

@@ -13,6 +13,6 @@ if(isset($_GET["CustomerID"]))
     $stml = $conn->prepare($sql);
     $stml->execute();
     $result=$stml->fetch(PDO::FETCH_NUM);
-    print_r($resute);
+    print_r($result);
 }
 ?>
