@@ -1,35 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Test SQL Country injection</h1>
+    <form action="select_injection_2Countrybindparam.php" method="GET">
+        <input type="text" plancholder="Enter Country Name" name="CountryName">
+        <br><br>
+        <input type="Submit">
+    </form>
+</body>
+</html>
 <?php
-require "connect.php";
 
-
-if(isset($_GET["CountryName"]))
-
-{
-
-    $CountryName = $_GET["CountryName"];
-    echo "<br>"."CountryName =".$CountryName;
-    $sql="SELECT * FROM country WHERE CountryName = :countryname";
-    echo "<br>" . "sql=".$sql."<br>";
+if (isset($_GET["CountryName"])):
+    echo "<br>" . $_GET['CountryName'];
+    require 'connect.php';
+    $count = 0;
+    $sql = "SELECT * FROM country where CountryName =:CountryName";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':CountryName', $_GET['CountryName']);
     $stmt->execute();
-    $result=$stmt->fetch(PDO::FETCH_ASSOC);
-    //print_r($result);
-}
-?>
-<table width="300" border="1">
-  <tr>
-    <th width="325">รหัสประเทศ</th>
-    <td width="240"><?php echo $result["CountryCode"]; ?></td>
-  </tr>
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
-  <tr>
-    <th width="130">ชื่อประเทศ</th>
-    <td><?php echo $result["CountryName"]; ?></td>
-  </tr>
+    echo "<br>******************<br>";
 
- 
-  </table>
-<?php
-$conn = null;
+    while ($row = $stmt->fetch()) {
+        echo $row['CountryName']. '&nbsp' . $row['CountryCode'] ."<br>";
+        $count++;
+    }
+
+    //echo "count ... ".$count;
+    if($count==0)
+    echo "<br> No data ... <br>";
+    $conn = null;
+endif;
 ?>
